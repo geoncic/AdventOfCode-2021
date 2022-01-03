@@ -64,9 +64,10 @@ def summationMap(number):
 
 
 def readFile():
-    with open('input.txt') as f:
+    with open('test.txt') as f:
         data = f.read()
         data = [int(i) for i in data.split(',')]
+    print(data)
     return data
 
 

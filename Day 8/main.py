@@ -1,4 +1,3 @@
-
 def dayEight():
     data = readFile()
     print(f'Part One: Number of instances is {partOne(data)}')
