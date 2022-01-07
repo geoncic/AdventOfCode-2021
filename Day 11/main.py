@@ -10,17 +10,17 @@ def dayEleven():
         for x, c in enumerate(line):
             coords[(x, y)] = int(c)
 
-
-    print(f'Part One: number of flashes seen is {partOne(coords, 100)}')
-    # print(f'Part One: Middle score is {partTwo(data)}')
-
-
-
+    partOne(coords,100)
+    partOne(coords,1000)
 
 def partOne(coords, cycles):
     flashes = 0
+    c = 0
+    oct_number = len(coords.values())
 
-    for c in range(cycles):
+    while c != cycles:
+        c += 1
+        cycle_flash = 0
         seen = set()
         triggered = []
         todo = []
@@ -28,6 +28,7 @@ def partOne(coords, cycles):
             if coords.get((x, y)) == 9:
                 coords[(x, y)] = 0
                 flashes += 1
+                cycle_flash += 1
             else:
                 coords[(x, y)] += 1
 
@@ -46,11 +47,17 @@ def partOne(coords, cycles):
                         todo.append(pt)
                         coords[pt] = 0
                         flashes += 1
+                        cycle_flash += 1
                     else:
                         coords[pt] += 1
                 else:
                     pass
-    return flashes
+        if cycle_flash == 100:
+            print(f'Cycle {c} saw {cycle_flash} flashes!')
+            break
+        else:
+            pass
+    print(f'Total of {flashes} flashes in {c} Cycles')
 
 
 def eval_triggered(coords, pt, triggered):
