@@ -14,17 +14,6 @@ def dayNine():
     print(f'Part One: Risk Level is {partOne_alt(coords)[0]}')
     print(f'Part Two: Basin Size is {partOne_alt(coords)[1]}')
 
-    # partTwo(coords)
-
-# def partOne(data):
-#     map_size = (max([len(x) for x in data]), len(data))
-#     risk_level = 0
-#
-#     for y in range(map_size[1]):
-#         for x in range(map_size[0]):
-#             risk_level += inspect_loc(x, y, data, map_size)
-#     return risk_level
-
 
 def partOne_alt(data):
     risk_level = 0
