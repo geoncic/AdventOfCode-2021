@@ -23,3 +23,15 @@ Dictionaries, helper functions, and string compares to solve by process of elimi
 ## Day 9 - Complete
 ### Utilized generators and Depth First Search type recursion.
 Used sets, lists, and dictionaries to keep track of search results
+
+## Day 10 - Complete
+Utilized list stack
+
+## Day 11 - Complete
+Utilized Generator function to recurse through adjacent points
+
+## Day 12 - Complete
+I needed some help wrapping my head around recursive DFS and BFS strategies. took several days to finally "get" it.
+
+## Day 13 - Complete
+This one was relatively easy! Came up with a pretty simple solution without looking at any other references.
