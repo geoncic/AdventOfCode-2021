@@ -24,7 +24,7 @@ def partOne_alt(data):
             minimas.append((x, y))
             risk_level += n + 1
 
-    for x, y in minimas:
+    for x, y in minimas:z
         seen = set()
         todo = [(x, y)]
 
