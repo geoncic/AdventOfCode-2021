@@ -24,7 +24,7 @@ def partOne_alt(data):
             minimas.append((x, y))
             risk_level += n + 1
 
-    for x, y in minimas:z
+    for x, y in minimas:
         seen = set()
         todo = [(x, y)]
 
@@ -41,39 +41,6 @@ def partOne_alt(data):
     basin_size = basin_sort_3[0]*basin_sort_3[1]*basin_sort_3[2]
 
     return risk_level, basin_size
-
-# def inspect_loc(x, y, data, map_size):
-#     loc_h = int(data[y][x])
-#
-#     try:
-#         up_h = int(data[y-1][x])
-#     except IndexError:
-#         pass
-#     try:
-#         down_h = int(data[y+1][x])
-#     except IndexError:
-#         pass
-#     try:
-#         left_h = int(data[y][x-1])
-#     except IndexError:
-#         pass
-#     try:
-#         right_h = int(data[y][x+1])
-#     except IndexError:
-#         pass
-#
-#     if x == 0:
-#         left_h = 9
-#     if x == (map_size[0]-1):
-#         right_h = 9
-#     if y == 0:
-#         up_h = 9
-#     if y == (map_size[1]-1):
-#         down_h = 9
-#
-#     is_min = loc_h < min(up_h, down_h, left_h, right_h)
-#     risk_level = loc_h*is_min + is_min
-#     return risk_level
 
 
 def adjacent(x: int, y: int) -> Generator[tuple[int, int], None, None]:

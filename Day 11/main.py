@@ -10,13 +10,13 @@ def dayEleven():
         for x, c in enumerate(line):
             coords[(x, y)] = int(c)
 
-    partOne(coords,100)
-    partOne(coords,1000)
+    partOne(coords, 100)
+    partOne(coords, 1000)
+
 
 def partOne(coords, cycles):
     flashes = 0
     c = 0
-    oct_number = len(coords.values())
 
     while c != cycles:
         c += 1

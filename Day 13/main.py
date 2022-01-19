@@ -65,9 +65,6 @@ def make_paper(dots):
     for loc in dots:
         x_dot, y_dot = loc
         paper[y_dot][x_dot] = '#'
-    # print(f'Fold the Paper!!!')
-    # for step in paper:
-    #     print(step)
     return paper
 
 

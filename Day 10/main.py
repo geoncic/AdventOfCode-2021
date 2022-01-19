@@ -1,5 +1,3 @@
-from collections import defaultdict
-
 def dayTen():
     data = readFile()
     print(f'Part One: Total syntax errors score is {partOne(data)}')
@@ -43,12 +41,10 @@ def partTwo(data):
                         stack = stack[::-1]
                         stack_scores.append(scoreStack(stack))
                 else:
-                    # points += set_points[c]
                     break
 
     stack_scores = sorted(stack_scores)
     return stack_scores[int(len(stack_scores)/2)]
-
 
     # This finally makes sense... this code does not work below, because it
     # tries to close a chunk while others are still open

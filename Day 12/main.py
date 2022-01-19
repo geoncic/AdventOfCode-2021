@@ -1,5 +1,6 @@
 import collections
 
+
 def bfs():
     while todo_bfs:
         path = todo_bfs.pop()
@@ -11,6 +12,7 @@ def bfs():
                 todo_bfs.append((*path, cand))
     return len(all_paths)
 
+
 def dfs(path: list[list[str]], visited: set[str], cave: [str]):
     if cave == 'end':
         solutions_dfs.append(path)
@@ -20,6 +22,7 @@ def dfs(path: list[list[str]], visited: set[str], cave: [str]):
         for next_cave in edges[cave]:
             if next_cave not in visited:
                 dfs(path + [next_cave], set(visited), next_cave)
+
 
 def dfs_2(path: list[list[str]], visited: set[str], cave: [str], twice: set[str]):
     if cave == 'end':
@@ -35,11 +38,12 @@ def dfs_2(path: list[list[str]], visited: set[str], cave: [str], twice: set[str]
             elif next_cave not in ['start', 'end'] and len(twice) == 0:
                 dfs_2(path + [next_cave], set(visited), next_cave, set(twice))
 
+
 def read_file():
     with open('input.txt') as f:
-        data = f.read().split('\n')
+        info = f.read().split('\n')
+    return info
 
-    return data
 
 if __name__ == "__main__":
     data = read_file()
