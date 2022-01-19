@@ -145,5 +145,6 @@ def readFile():
         return allPoints
 
 
+
 if __name__ == "__main__":
     dayFive()

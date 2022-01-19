@@ -35,3 +35,8 @@ I needed some help wrapping my head around recursive DFS and BFS strategies. too
 
 ## Day 13 - Complete
 This one was relatively easy! Came up with a pretty simple solution without looking at any other references.
+
+## Day 14 - Complete
+
+## Day 15 - In Process
+Use a priority queue, such as heapq
