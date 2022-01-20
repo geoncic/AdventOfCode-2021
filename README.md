@@ -39,4 +39,4 @@ This one was relatively easy! Came up with a pretty simple solution without look
 ## Day 14 - Complete
 
 ## Day 15 - In Process
-Use a priority queue, such as heapq
+Used a priority queue, such as heapq
