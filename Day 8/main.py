@@ -1,20 +1,21 @@
-def dayEight():
-    data = readFile()
-    print(f'Part One: Number of instances is {partOne(data)}')
-    print(f'Part Two: Sum of all output is {partTwo(data)}')
+def day_eight():
+    data = read_file()
+    print(f'Part One: Number of instances is {part_one(data)}')
+    print(f'Part Two: Sum of all output is {part_two(data)}')
 
-def partOne(data):
+
+def part_one(data):
     data_output = []
     digit_counter = 0
 
     for line in data:
         line_output = []
-        line_map = decodeLine(line[0])
+        line_map = decode_line(line[0])
         for d in line[1]:
             for x, y in line_map.items():
-                if len(segDiff(d, y)) == 0:
+                if len(s_diff(d, y)) == 0:
                     line_output.append(x)
-        data_output.append((line_output))
+        data_output.append(line_output)
 
     for row in data_output:
         for d in row:
@@ -22,18 +23,19 @@ def partOne(data):
                 digit_counter += 1
     return digit_counter
 
-def partTwo(data):
+
+def part_two(data):
     data_output = []
     sum_output = 0
 
     for line in data:
         line_output = []
-        line_map = decodeLine(line[0])
+        line_map = decode_line(line[0])
         for d in line[1]:
             for x, y in line_map.items():
-                if len(segDiff(d, y)) == 0:
+                if len(s_diff(d, y)) == 0:
                     line_output.append(x)
-        data_output.append((line_output))
+        data_output.append(line_output)
 
     for line in data_output:
         output = [str(x) for x in line]
@@ -42,49 +44,51 @@ def partTwo(data):
 
     return sum_output
 
-def decodeLine(digit_list):
-    digitMap = {}
+
+def decode_line(digit_list):
+    digit_map = {}
 
     # Solve for 1, 4, 7, and 8
     for i, d in enumerate(digit_list):
         if len(d) == 2:
-            digitMap[1] = d
+            digit_map[1] = d
         elif len(d) == 4:
-            digitMap[4] = d
+            digit_map[4] = d
         elif len(d) == 3:
-            digitMap[7] = d
+            digit_map[7] = d
         elif len(d) == 7:
-            digitMap[8] = d
+            digit_map[8] = d
         else:
             pass
 
     # solve for 0, 6, and 9
     for i, d in enumerate(digit_list):
         if len(d) == 6:
-            diff = segDiff(d, digitMap[8])
-            if diff not in digitMap[4]:
-                digitMap[9] = d
-            elif diff not in digitMap[1]:
-                digitMap[0] = d
+            diff = s_diff(d, digit_map[8])
+            if diff not in digit_map[4]:
+                digit_map[9] = d
+            elif diff not in digit_map[1]:
+                digit_map[0] = d
             else:
-                digitMap[6] = d
+                digit_map[6] = d
         else:
             pass
 
     # solve for 2, 3, and 5
     for i, d in enumerate(digit_list):
         if len(d) == 5:
-            diff = segDiff(d, digitMap[8])
-            if (segCounter(diff, digitMap[9]) + segCounter(diff, digitMap[6])) == 0:
-                digitMap[2] = d
-            elif (segCounter(diff, digitMap[9]) + segCounter(diff, digitMap[6])) == 1:
-                digitMap[3] = d
+            diff = s_diff(d, digit_map[8])
+            if (seg_counter(diff, digit_map[9]) + seg_counter(diff, digit_map[6])) == 0:
+                digit_map[2] = d
+            elif (seg_counter(diff, digit_map[9]) + seg_counter(diff, digit_map[6])) == 1:
+                digit_map[3] = d
             else:
-                digitMap[5] = d
+                digit_map[5] = d
 
-    return digitMap
+    return digit_map
 
-def segCounter(seg_diff, x):
+
+def seg_counter(seg_diff, x):
     counter = 0
     for i in seg_diff:
         if i not in x:
@@ -93,7 +97,8 @@ def segCounter(seg_diff, x):
             pass
     return counter
 
-def segDiff(a, b):
+
+def s_diff(a, b):
     set_diff = []
     for x in a:
         if x in b:
@@ -110,7 +115,7 @@ def segDiff(a, b):
     return set_diff
 
 
-def readFile():
+def read_file():
     with open('input.txt') as f:
         data = []
 
@@ -126,4 +131,4 @@ def readFile():
 
 
 if __name__ == "__main__":
-    dayEight()
+    day_eight()
