@@ -1,24 +1,12 @@
 from math import prod
 
-# TYPE_1 = sum
-# TYPE_2 = prod
-# TYPE_3 = min
-# TYPE_4 = max
-# # sub-packet count is always 2
-# TYPE_5 =    # value == 1 if value(children_packets[0]) > value(children_packets[1]) else: value = 0
-# TYPE_6 =    # value == 1 if value(children_packets[0]) < value(children_packets[1]) else: value = 0
-# TYPE_7 =    # value == 1 if value(children_packets[0]) == value(children_packets[1]) else: value = 0
-
-""" Todo: for each packet, collect values of all sub-packets. 
-Value is the return value of sub-packets based on the type id.
-"""
-
 
 class Packet:
     version: int
     type: int
     literal_value: int or None
     length_type_id: int or None
+    value: int
     children: list
     extra_bits: str
     level: int
@@ -30,6 +18,7 @@ class Packet:
         self.type = int(packet[3:6], 2)
         self.literal_value = None
         self.length_type_id = None
+        self.value = 0
         self.children = []
         self.extra_bits = ''
         self.level = level
@@ -48,14 +37,14 @@ class Packet:
                 self._parse_number_children(packet[1:])
 
     def _parse_literal(self, packet: str) -> None:
-        literal = 0
+        packet_value = ''
         stop_bit = 1
         index = 0
         while stop_bit == 1:
             stop_bit = int(packet[index])
-            literal += int(packet[index + 1:index + 5], 2)
+            packet_value += packet[index + 1:index + 5]
             index += 5
-        self.literal_value = literal
+        self.literal_value = int(packet_value, 2)
         self.extra_bits = packet[index:]
 
     def _parse_total_children(self, packet: str) -> None:
@@ -79,11 +68,65 @@ class Packet:
     def total_version_number(self) -> int:
         version = self.version
         version += sum([c.total_version_number() for c in self.children])
-        # print(f'level is {self.level}')
-        # print(f'Packet is {self.bit_str}')
+        children_version_sum = version - self.version
         indent = '  ' * self.level
-        print(indent + f'Version -> {self.version}, Type - > {self.type}, Level -> {self.level}; Version Sum -> {version}')
+        print(indent + f'Type - > {self.type}, Level -> {self.level}; Children Version Sum -> '
+                       f'{children_version_sum}; Version Sum -> {version}')
         return version
+
+    # def total_value(self) -> int:
+    #     if self.type == 4:
+    #         self.value = self.literal_value
+    #     elif self.type == 0:
+    #         self.value += sum([c.total_value() for c in self.children])
+    #
+    #
+    #     elif self.type == 1:
+    #         self.value += prod([c.total_value() for c in self.children])
+    #
+    #     elif self.type == 2:
+    #         self.value += min([c.total_value() for c in self.children])
+    #
+    #     elif self.type == 3:
+    #         self.value += max([c.total_value() for c in self.children])
+    #
+    #     elif self.type == 5:
+    #         if self.children[0].total_value() > self.children[1].total_value():
+    #             self.value += 1
+    #
+    #     elif self.type == 6:
+    #         if self.children[0].total_value() < self.children[1].total_value():
+    #             self.value += 1
+    #
+    #     elif self.type == 7:
+    #         if self.children[0].total_value() == self.children[1].total_value():
+    #             self.value += 1
+    #
+    #
+    #     indent = '  ' * self.level
+    #     # if self.level == 1:
+    #     print(indent + f'Type - > {self.type}, Level -> {self.level}; Value -> {self.value}')
+    #     return self.value
+
+    def total_value(self) -> int:
+        child_values = [c.total_value() for c in self.children]
+
+        if self.type == 4:
+            return self.literal_value
+        elif self.type == 0:
+            return sum(child_values)
+        elif self.type == 1:
+            return prod(child_values)
+        elif self.type == 2:
+            return min(child_values)
+        elif self.type == 3:
+            return max(child_values)
+        elif self.type == 5:
+            return int(child_values[0] > child_values[1])
+        elif self.type == 6:
+            return int(child_values[0] < child_values[1])
+        elif self.type == 7:
+            return int(child_values[0] == child_values[1])
 
 
 def part_one() -> int:
@@ -104,7 +147,21 @@ def part_one() -> int:
 
 
 def part_two():
-    pass
+    parse_input: Packet
+    solution: int
+    bin_packet_list: list[str]
+
+    bin_packet_list = []
+    for line in data:
+        bin_str = ''
+        for c in line:
+            bin_str += f'{int(c, 16):04b}'
+        bin_packet_list.append(bin_str)
+
+    parse_input = Packet(packet=bin_packet_list[0], level=0)
+    solution = parse_input.total_value()
+
+    return solution
 
 
 def read_file():
