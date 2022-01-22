@@ -13,7 +13,6 @@ class Bullet:
         self.time = 0
         self.overshot = False
 
-
     def update(self):
         self.time += 1
         self.x += int(self.x_v)
@@ -30,25 +29,16 @@ class Bullet:
 
     def check_bounds(self):
         global count
-
-        print(f'Checking {self.x}, {self.y}')
-        print(data[0][0], data[1][0])
-        if self.x in range(data[0][0], data[1][0]): # check x boundary
-            if self.y in range(data[1][1], data[0][1]): # check y boundary
-                print(f'Vel: {self.x_in}, {self.y_in}')
-                print(f'Pos: {self.x}, {self.y}')
-                count += 1
+        if data[0][0] <= self.x <= data[1][0]:
+            if data[1][1] <= self.y <= data[0][1]:
+                count.add((self.x_in, self.y_in))
                 return True
 
     def check_oob(self):
         if self.x > data[1][0]:
             self.overshot = True
-            print(f'Out Vel: {self.x_in}, {self.y_in}')
-            print(f'Out Pos: {self.x}, {self.y}')
         elif self.y < data[1][1]:
             self.overshot = True
-            print(f'Out Vel: {self.x_in}, {self.y_in}')
-            print(f'Out Pos: {self.x}, {self.y}')
         return self.overshot
 
 
@@ -63,17 +53,19 @@ def part_one():
                 if result:
                     bullet_height.append(int(result))
                     break
-    print(max(bullet_height))
+    return max(bullet_height)
+
 
 def part_two():
     pass
 
+
 def read_file():
-    with open('test.txt') as f:
+    with open('input.txt') as f:
         file = f.read()
         x_start = file.index('=')
         x_end = file.index(',', x_start + 1)
-        y_start = file.index('=',x_start + 1)
+        y_start = file.index('=', x_start + 1)
         x_min, x_max = file[x_start + 1:x_end].split('..')
         y_min, y_max = file[y_start + 1:].split('..')
         top_left = (int(x_min), int(y_max))
@@ -83,8 +75,7 @@ def read_file():
 
 if __name__ == "__main__":
     data = read_file()
-    count = 0
+    count = set()
 
     print(f'Part One: Max Y is {part_one()}')
-    print(f'Part Two: Successful hits is: {count}')
-    print(5 in range(5,10))
+    print(f'Part Two: Successful hits is: {len(count)}')
