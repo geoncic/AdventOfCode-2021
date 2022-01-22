@@ -38,5 +38,16 @@ This one was relatively easy! Came up with a pretty simple solution without look
 
 ## Day 14 - Complete
 
-## Day 15 - In Process
-Used a priority queue, such as heapq
+## Day 15 - Complete
+Used a priority queue, such as heapq. This was a bugger to wrap my head around.
+
+## Day 16 - Complete
+This one was also brutal. I really got tripped up with the literal value parsing. All test cases worked, but I believe
+that was due to luck. When I tried larger inputs, everything broke. It turns out the problem was that I was converting
+each nibble (4 bits) of chunks to integers then adding them together. I should have combined them into a binary string
+and then converted that entire binary string as one. Another solution would be to do a bit shift on every chunk, covert
+to integer, then add those.
+
+## Day 17 - Complete
+This one was relatively easy, but I got hung up on double-counting when an object is in the target area over multiple
+steps. Also, when doing boundary checking, I used range, which did not include the edge boundary.
