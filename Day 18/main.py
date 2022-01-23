@@ -1,10 +1,11 @@
 import ast
 from collections.abc import Sequence
 from itertools import chain, count
+from collections import defaultdict
 
 
 def calculate(snailfish: list[list], sig: str, type: str, operation: str) -> dict:
-    ret = {}
+    ret = defaultdict(list)
     split_dict(snailfish, sig, 'list', operation, ret)
     return ret
 
@@ -85,6 +86,23 @@ def reduce(sf_dict: dict) -> dict:
             if len(sum_key) == 1:
                 list_copy[int(sum_key[0])] += value
 
+    def _find_right(key: str):
+        test_key = ""
+        print(f'Finding Right Key')
+        right_key_flip = key.replace('1', '2').replace('0', '1').replace('2', '0')
+        print(right_key_flip)
+        for i in range(len(key)):
+            test_key += right_key_flip[i]
+            list_copy = sf_dict[test_key][0]
+            if isinstance(list_copy, int):
+                print(f'Found Int! {list_copy}')
+                print(f'Key Signature is: {test_key}')
+                return test_key
+
+    def _find_left(key: str):
+        pass
+
+
 
 
     # Getting so close, not doing correctly if adjacent number is inside a nested list
@@ -94,15 +112,27 @@ def reduce(sf_dict: dict) -> dict:
         if value[2] == "Explode":
             side = key[-1]
             sig_trim = key[:-1]
-            if side:
-                print(f'Explode list is right side')
+            if side == '1':
+                print(f'Explode list is right side: {sf_dict[key]}')
+                print(f'{side}')
+                print(f'Finding Left Digit.....')
+
+
                 left_check_sig_flip = key[-1].replace('1', '2').replace('0', '1').replace('2', '0')
+                print(f'Right List: Left Check Sig Flip: {left_check_sig_flip}')
                 left_check_sig = key[:-1] + left_check_sig_flip
+                print(f'Right List: Left Check Sig: {left_check_sig}: {sf_dict[left_check_sig]}')
+
+
+
                 right_check_sig_flip = sig_trim[-1].replace('1', '2').replace('0', '1').replace('2', '0')
-                print(f'Left Check Sig Flip: {left_check_sig_flip}')
+                print(f'Right List: Left Check Sig Flip: {left_check_sig_flip}')
                 right_check_sig = sig_trim[:-1] + right_check_sig_flip
-                print(f'Right Check Sig: {right_check_sig}')
-                
+
+                right_check_sig = _find_right(key)
+
+                # print(f'Right List: Right Check Sig: {right_check_sig}: {sf_dict[right_check_sig]}')
+
             else:
                 print(f'Explode list is left side')
                 print(f'Sig trim: {sig_trim}')
@@ -127,6 +157,8 @@ def reduce(sf_dict: dict) -> dict:
                 print(f'Value: {value[0]} with key {key} is left most {value[1]}')
 
             if min(key) != "1":
+                print(f'Right Check Sig: {right_check_sig}')
+                # print(sf_dict[right_check_sig])
                 if sf_dict[right_check_sig][1] == 'int':
                     _sum(right_check_sig, value[0][1])
             else:
@@ -174,7 +206,7 @@ if __name__ == "__main__":
     # map = {}
     print(depth(data[0]))
     print(data[0])
-    fish_dict = calculate(data[0], '', 'list', 'None')
+    fish_dict = calculate(data[2], '', 'list', 'None')
     # print(fish_dict)
     reduce(fish_dict)
     # new_fish = add_fish(data[0], data[1])
