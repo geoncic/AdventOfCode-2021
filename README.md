@@ -51,3 +51,8 @@ to integer, then add those.
 ## Day 17 - Complete
 This one was relatively easy, but I got hung up on double-counting when an object is in the target area over multiple
 steps. Also, when doing boundary checking, I used range, which did not include the edge boundary.
+
+## Day 18 - In Process
+This one is a real friggin bugger. I'm approaching it differently than what I've seen from others. I almost have it.
+
+Success!!

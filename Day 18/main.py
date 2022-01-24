@@ -2,43 +2,52 @@ import ast
 from math import floor, ceil
 from collections.abc import Sequence
 from itertools import chain, count
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 
 def part_one(input):
     global count
     sf_number = input[0]
 
     for i in range(1, len(input)):
+
         count = 0
         sf_number = [sf_number, input[i]]
         print(f'Reducing: {sf_number}')
         sf_number = compute_number(sf_number)
-        print(sf_number)
 
-    print(sf_number)
+        print(f'{i} Step Answer: {sf_number}')
+
+    # print(sf_number)
 
 
 def compute_number(sf_number: list):
     global count
     count += 1
     fish_number = sf_number
+    # print(f'Fish number: {fish_number}')
     fish_dict = create_dict_from_str(sf_number, '', 'list', 'None')
-
+    fish_dict = OrderedDict(sorted(fish_dict.items()))
+    # print(fish_dict)
+    print(f'Step: {count}')
+    if count == 26:
+        print(f'Step 26')
     if any([True for k, v in fish_dict.items() if v[2] == 'Explode']):
         print(f"Yes, Value: '{'Explode'}' exists in dictionary")
         fish_dict = explode_dict(fish_dict)
         fish_number = [fish_dict['0'][0], fish_dict['1'][0]]
+        print(fish_number)
         compute_number(fish_number)
     elif any([True for k, v in fish_dict.items() if v[2] == 'Split']):
         print(f"Yes, Value: '{'Split'}' exists in dictionary")
         fish_dict = split_dict(fish_dict)
         fish_number = [fish_dict['0'][0], fish_dict['1'][0]]
+        print(fish_number)
         compute_number(fish_number)
     else:
-        print(f"No, Value: '{'Explode'}' does not exists in dictionary")
+        print(f"No, Value: '{'Explode'}' or {'Split'} does not exists in dictionary")
 
-    print(f'The Final Number Is!!! {fish_number}')
-    print(f'Count: {count}')
+    # print(f'The Final Number Is!!! {fish_number}')
+    # print(f'Count: {count}')
     return fish_number
 
 def create_dict_from_str(snailfish: list[list], sig: str, t: str, operation: str) -> dict:
@@ -116,8 +125,6 @@ def explode_dict(sf_dict: dict) -> dict:
             if len(sum_key) == 1:
                 value_copy[int(sum_key[0])] += v
 
-
-
     def _find_l_key(k: str):
         test_key = k + '0'
         while True:
@@ -149,27 +156,30 @@ def explode_dict(sf_dict: dict) -> dict:
             if max(key) != "0":
                 if sf_dict[left_check_sig][1] == 'int':
                     _sum(left_check_sig, value[0][0])
-            else:
-                print(f'Value: {value[0]} with key {key} is left most {value[1]}')
+            # else:
+            #     print(f'Value: {value[0]} with key {key} is left most {value[1]}')
+            #     pass
 
             if min(key) != "1":
                 if sf_dict[right_check_sig][1] == 'int':
                     _sum(right_check_sig, value[0][1])
-            else:
-                print(f'Value: {value[0]} with key {key} is right most {value[1]}')
+            # else:
+            #     print(f'Value: {value[0]} with key {key} is right most {value[1]}')
+            #     pass
 
             sf_dict[key] = [0, 'int', 'None']
             sf_dict.pop(key + '0')
             sf_dict.pop(key + '1')
 
             _zero(key)
+            return(sf_dict)
             # print(sf_dict)
 
     new_sfnumber = [sf_dict['0'][0], sf_dict['1'][0]]
 
     # print('\n')
     # print(new_sfnumber)
-    return sf_dict
+    # return sf_dict
 
 
 
@@ -185,9 +195,6 @@ def split_dict(sf_dict: dict) -> dict:
             if len(clean_key) == 1:
                 list_copy[int(clean_key[0])] = sp_list
 
-
-
-
     for key, value in list(sf_dict.items()):
         if value[2] == "Split":
             split_list = [floor(value[0] / 2), ceil(value[0] / 2)]
@@ -200,10 +207,10 @@ def split_dict(sf_dict: dict) -> dict:
                 sf_dict[key + '1'] = [split_list[1], 'int', 'Split']
             else:
                 sf_dict[key + '1'] = [split_list[1], 'int', 'None']
-
             _clean_dict(key, split_list)
+            return sf_dict # Exit split_dict() after first element is split
 
-    return sf_dict
+    # return sf_dict
 
 
 
