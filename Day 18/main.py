@@ -1,66 +1,84 @@
 import ast
 from math import floor, ceil
-from collections.abc import Sequence
-from itertools import chain, count
 from collections import defaultdict, OrderedDict
 
-def part_one(input):
-    global count
-    sf_number = input[0]
 
-    for i in range(1, len(input)):
+def part_one(sf_list):
 
-        count = 0
-        sf_number = [sf_number, input[i]]
-        print(f'Reducing: {sf_number}')
+    sf_number = sf_list[0]
+
+    for i in range(1, len(sf_list)):
+        sf_number = [sf_number, sf_list[i]]
         sf_number = compute_number(sf_number)
+    print(f'The final sum is {sf_number}')
 
-        print(f'{i} Step Answer: {sf_number}')
+    while recursive_len(sf_number) > 2:
+        sf_number = magnitude(sf_number)
 
-    # print(sf_number)
+    sf_magnitude = sf_number[0] * 3 + sf_number[1] * 2
+    return sf_magnitude
+
+
+def magnitude(fish: list) -> list:
+    fish_dict = create_dict_from_list(fish, '', 'list', 'None')
+    fish_dict = OrderedDict(sorted(fish_dict.items()))
+    for key, value in list(fish_dict.items()):
+        elem_size = recursive_len(value[0])
+
+        if elem_size == 2:
+            if len(key) != 1:
+                elem_side = int(key[-1])
+                element_mag = (value[0][0]) * 3 + (value[0][1] * 2)
+                fish_dict[key] = [element_mag, 'int', 'None']
+                fish_dict[key[:-1]][0][elem_side] = element_mag
+                fish_dict.pop(key)
+
+            else:
+                element_mag = (value[0][0]) * 3 + (value[0][1] * 2)
+                fish_dict[key] = [element_mag, 'int', 'None']
+
+        if isinstance(value[0], int):
+            fish_dict.pop(key)
+
+    return create_list_from_dict(fish_dict)
+
+
+def recursive_len(item):
+    if type(item) == list:
+        return sum(recursive_len(subitem) for subitem in item)
+    else:
+        return 1
 
 
 def compute_number(sf_number: list):
-    global count
-    count += 1
+
     fish_number = sf_number
-    # print(f'Fish number: {fish_number}')
-    fish_dict = create_dict_from_str(sf_number, '', 'list', 'None')
+    fish_dict = create_dict_from_list(sf_number, '', 'list', 'None')
     fish_dict = OrderedDict(sorted(fish_dict.items()))
-    # print(fish_dict)
-    print(f'Step: {count}')
-    if count == 26:
-        print(f'Step 26')
+
     if any([True for k, v in fish_dict.items() if v[2] == 'Explode']):
-        print(f"Yes, Value: '{'Explode'}' exists in dictionary")
         fish_dict = explode_dict(fish_dict)
         fish_number = [fish_dict['0'][0], fish_dict['1'][0]]
-        print(fish_number)
         compute_number(fish_number)
     elif any([True for k, v in fish_dict.items() if v[2] == 'Split']):
-        print(f"Yes, Value: '{'Split'}' exists in dictionary")
         fish_dict = split_dict(fish_dict)
         fish_number = [fish_dict['0'][0], fish_dict['1'][0]]
-        print(fish_number)
         compute_number(fish_number)
-    else:
-        print(f"No, Value: '{'Explode'}' or {'Split'} does not exists in dictionary")
 
-    # print(f'The Final Number Is!!! {fish_number}')
-    # print(f'Count: {count}')
     return fish_number
 
-def create_dict_from_str(snailfish: list[list], sig: str, t: str, operation: str) -> dict:
+
+def create_dict_from_list(snailfish: list[list], sig: str, t: str, operation: str) -> dict:
     ret = defaultdict(list)
     create_dict(snailfish, sig, t, operation, ret)
     return ret
 
-def create_str_from_dict(sf_dict: dict) -> str:
+
+def create_list_from_dict(sf_dict: dict) -> list:
     return [sf_dict['0'][0], sf_dict['1'][0]]
 
 
 def create_dict(seq: list, sig: str, t: str, operation: str, m: dict):
-    operation = 'None'
     left = seq[0]
     left_sig = sig + '0'
     right = seq[1]
@@ -89,17 +107,6 @@ def create_dict(seq: list, sig: str, t: str, operation: str, m: dict):
         m[right_sig][1] = t
         if m[right_sig][0] > 9:
             m[right_sig][2] = "Split"
-
-
-def depth(seq: list):
-    seq = iter(seq)
-    level = 0
-    try:
-        for level in count():
-            seq = chain([next(seq)], seq)
-            seq = chain.from_iterable(s for s in seq if isinstance(s, Sequence))
-    except StopIteration:
-        return level
 
 
 def explode_dict(sf_dict: dict) -> dict:
@@ -156,31 +163,17 @@ def explode_dict(sf_dict: dict) -> dict:
             if max(key) != "0":
                 if sf_dict[left_check_sig][1] == 'int':
                     _sum(left_check_sig, value[0][0])
-            # else:
-            #     print(f'Value: {value[0]} with key {key} is left most {value[1]}')
-            #     pass
 
             if min(key) != "1":
                 if sf_dict[right_check_sig][1] == 'int':
                     _sum(right_check_sig, value[0][1])
-            # else:
-            #     print(f'Value: {value[0]} with key {key} is right most {value[1]}')
-            #     pass
 
             sf_dict[key] = [0, 'int', 'None']
             sf_dict.pop(key + '0')
             sf_dict.pop(key + '1')
 
             _zero(key)
-            return(sf_dict)
-            # print(sf_dict)
-
-    new_sfnumber = [sf_dict['0'][0], sf_dict['1'][0]]
-
-    # print('\n')
-    # print(new_sfnumber)
-    # return sf_dict
-
+            return sf_dict
 
 
 def split_dict(sf_dict: dict) -> dict:
@@ -208,11 +201,7 @@ def split_dict(sf_dict: dict) -> dict:
             else:
                 sf_dict[key + '1'] = [split_list[1], 'int', 'None']
             _clean_dict(key, split_list)
-            return sf_dict # Exit split_dict() after first element is split
-
-    # return sf_dict
-
-
+            return sf_dict   # Exit split_dict() after first element is split
 
 
 def find_sig_key(input_dict: dict, value: str):
@@ -225,7 +214,7 @@ def add_fish(a: list, b: list) -> list:
 
 
 def read_file():
-    with open('test.txt') as f:
+    with open('input.txt') as f:
         file = f.read().split()
         output = []
         for i, line in enumerate(file):
@@ -235,20 +224,4 @@ def read_file():
 
 if __name__ == "__main__":
     data = read_file()
-    # comb_fish = add_fish(data[0], data[1])
-    # fish_dict = create_dict_from_str(data[4], '', 'list', 'None')
-    # exploded_dict = explode_dict(fish_dict)
-    # clean_list = create_str_from_dict(exploded_dict)
-    # clean_dict = create_dict_from_str(clean_list, '', 'list', 'None')
-    # print(f'Exploded List: {clean_list}')
-    # print(clean_dict)
-    # splited_dict = split_dict(clean_dict)
-    # clean_list = create_str_from_dict(splited_dict)
-    # print(f'Split List: {clean_list}')
-
-    # print(f'Splited Dict: {splited_dict}')
-    # count = 0
-    # sf_number = compute_number(data[0])
-    # print(f'Count is {count}')
-    # print(f'Reduced number is: {sf_number}')
-    part_one(data)
+    print(f'Part One: Magnitude is {part_one(data)}')
