@@ -54,5 +54,5 @@ steps. Also, when doing boundary checking, I used range, which did not include t
 
 ## Day 18 - In Process
 This one is a real friggin bugger. I'm approaching it differently than what I've seen from others. I almost have it.
-
 Success!!
+Holy Cow, this one was tough for me. But I finally ot it, all on my own.

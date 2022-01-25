@@ -1,6 +1,8 @@
 import ast
 from math import floor, ceil
 from collections import defaultdict, OrderedDict
+from itertools import permutations
+from copy import deepcopy
 
 
 def part_one(sf_list):
@@ -10,7 +12,6 @@ def part_one(sf_list):
     for i in range(1, len(sf_list)):
         sf_number = [sf_number, sf_list[i]]
         sf_number = compute_number(sf_number)
-    print(f'The final sum is {sf_number}')
 
     while recursive_len(sf_number) > 2:
         sf_number = magnitude(sf_number)
@@ -19,25 +20,46 @@ def part_one(sf_list):
     return sf_magnitude
 
 
+def part_two(fs_pt2):
+    mag_list = []
+    perm_tup = permutations(fs_pt2, 2)
+    perm_lst = []
+    for line in list(perm_tup):
+        perm_lst.append(deepcopy(list(line)))
+
+    for x, line in enumerate(perm_lst.copy()):
+        c_fish = deepcopy(line)
+        c_fish = compute_number(c_fish)
+        mag_fish = deepcopy(c_fish)
+
+        while recursive_len(mag_fish) > 2:
+            mag_fish = magnitude(mag_fish)
+
+        sf_magnitude = mag_fish[0] * 3 + mag_fish[1] * 2
+        mag_list.append(sf_magnitude)
+    return max(mag_list)
+
+
 def magnitude(fish: list) -> list:
     fish_dict = create_dict_from_list(fish, '', 'list', 'None')
     fish_dict = OrderedDict(sorted(fish_dict.items()))
     for key, value in list(fish_dict.items()):
         elem_size = recursive_len(value[0])
 
+        key_size = len(key)
         if elem_size == 2:
-            if len(key) != 1:
+
+            if key_size != 1:
                 elem_side = int(key[-1])
                 element_mag = (value[0][0]) * 3 + (value[0][1] * 2)
                 fish_dict[key] = [element_mag, 'int', 'None']
                 fish_dict[key[:-1]][0][elem_side] = element_mag
                 fish_dict.pop(key)
-
             else:
                 element_mag = (value[0][0]) * 3 + (value[0][1] * 2)
                 fish_dict[key] = [element_mag, 'int', 'None']
 
-        if isinstance(value[0], int):
+        if isinstance(value[0], int) and key_size != 1:
             fish_dict.pop(key)
 
     return create_list_from_dict(fish_dict)
@@ -52,7 +74,7 @@ def recursive_len(item):
 
 def compute_number(sf_number: list):
 
-    fish_number = sf_number
+    fish_number = sf_number.copy()
     fish_dict = create_dict_from_list(sf_number, '', 'list', 'None')
     fish_dict = OrderedDict(sorted(fish_dict.items()))
 
@@ -127,8 +149,6 @@ def explode_dict(sf_dict: dict) -> dict:
             value_copy = sf_dict[pre_key][0]
             sum_key = k[len(pre_key):]
 
-            # I only care about sf_dict[0] and sf_dict[1] being accurate
-
             if len(sum_key) == 1:
                 value_copy[int(sum_key[0])] += v
 
@@ -154,10 +174,8 @@ def explode_dict(sf_dict: dict) -> dict:
             if side == '1':
                 left_check_sig = _find_l_key(key[:-1])
                 right_check_sig = _find_r_key(key.rstrip('1')[:-1])
-
             else:
                 left_check_sig = _find_l_key(key.rstrip('0')[:-1])
-
                 right_check_sig = _find_r_key(key[:-1])
 
             if max(key) != "0":
@@ -184,7 +202,6 @@ def split_dict(sf_dict: dict) -> dict:
             list_copy = sf_dict[pre_key][0]
             clean_key = k[len(pre_key):]
 
-            # I only care about sf_dict[0] and sf_dict[1] being accurate
             if len(clean_key) == 1:
                 list_copy[int(clean_key[0])] = sp_list
 
@@ -225,3 +242,4 @@ def read_file():
 if __name__ == "__main__":
     data = read_file()
     print(f'Part One: Magnitude is {part_one(data)}')
+    print(f'Part Two: Max magnitude is {part_two(data)}')
