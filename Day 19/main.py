@@ -8,7 +8,7 @@ from typing import NamedTuple
 from itertools import permutations
 
 
-INPUT_TXT = os.path.join(os.path.dirname(__file__), 'test.txt')
+INPUT_TXT = os.path.join(os.path.dirname(__file__), 'input.txt')
 AXIS_ROTATIONS = [
     p for t in [
         (1, 2, 3),
@@ -70,22 +70,30 @@ def compute(s: str) -> ...:
     scanners = [Scanner.from_str(part) for part in s.split('\n\n')]
     scanner_positions = {0: (0, 0, 0)}
     all_points = set(scanners.pop(0).points)
-    print(f'Length of all_points: {len(all_points)}')
 
 
     while scanners:
         offset, scanner, new_points = find_orientation(all_points, scanners)
-        print(f'Scanner: {scanner.sid} with Offset: {offset}')
 
-        # print(scanner_positions)
         scanner_positions[scanner.sid] = tuple(offset)
 
         for p in new_points:
             all_points.add(p)
         scanners.remove(scanner)
-        # print(f'Length of all_points: {len(all_points)}')
 
-    print(scanner_positions)
+    max_distace = 0
+    for scanner, offset in scanner_positions.items():
+        for scanner2, offset2 in scanner_positions.items():
+            distance = sum([abs(a - b) for a, b in zip(offset, offset2)])
+            print([abs(a-b) for a, b in zip(offset, offset2)])
+
+            if distance > max_distace:
+                max_distace = distance
+                # print(f'Scanner {scanner} and Scanner {scanner2} with offsets {offset} and {offset2} and distance {distance}')
+
+
+    print(f'Part One is: {len(all_points)}')
+    print(f'Part Two is: {max_distace}')
 
 
 def find_orientation(known: set, scanners) -> [list, Scanner, list[tuple]]:

@@ -52,7 +52,15 @@ to integer, then add those.
 This one was relatively easy, but I got hung up on double-counting when an object is in the target area over multiple
 steps. Also, when doing boundary checking, I used range, which did not include the edge boundary.
 
-## Day 18 - In Process
+## Day 18 - Complete
 This one is a real friggin bugger. I'm approaching it differently than what I've seen from others. I almost have it.
 Success!!
 Holy Cow, this one was tough for me. But I finally ot it, all on my own.
+
+## Day 19 - Complete
+I needed some help with this one. Watched several examples and combined in a way to give me more experience
+with some techniques I haven't used much. 
+
+Used Class, typing, zips, and list comprehensions
+
+## Day 12 - WIP
