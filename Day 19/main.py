@@ -71,7 +71,6 @@ def compute(s: str) -> ...:
     scanner_positions = {0: (0, 0, 0)}
     all_points = set(scanners.pop(0).points)
 
-
     while scanners:
         offset, scanner, new_points = find_orientation(all_points, scanners)
 
@@ -89,8 +88,6 @@ def compute(s: str) -> ...:
 
             if distance > max_distace:
                 max_distace = distance
-                # print(f'Scanner {scanner} and Scanner {scanner2} with offsets {offset} and {offset2} and distance {distance}')
-
 
     print(f'Part One is: {len(all_points)}')
     print(f'Part Two is: {max_distace}')

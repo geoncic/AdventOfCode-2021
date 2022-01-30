@@ -9,7 +9,8 @@ def dayEleven():
     for y, line in enumerate(data):
         for x, c in enumerate(line):
             coords[(x, y)] = int(c)
-
+    print(data)
+    print(coords)
     partOne(coords, 100)
     partOne(coords, 1000)
 
