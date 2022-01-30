@@ -13,7 +13,11 @@ def part_one(a: str, img: list) -> int:
     pcount = 0
 
     for s in range(steps):
-        img = day_twenty(a, img)
+        if s // 2 == 0:
+            img = expand_image(img, a[5])
+        else:
+            img = expand_image(img, a[0])
+        img = day_twenty(a, img, '.')
 
     while len(img) > final_size[0]:
         img = img[1:-1, 1:-1]
@@ -25,10 +29,32 @@ def part_one(a: str, img: list) -> int:
     return pcount
 
 
-def day_twenty(algo: str, image: list) -> ...:
-    image = expand_image(image)
-    new_image = image.copy()
+def part_two(a: str, img: list) -> int:
+    steps = 50
 
+    final_size = ((len(img)+2*steps), (len(img[0])+2*steps))
+    pcount = 0
+
+    for s in range(steps):
+        if s % 2 == 0:
+            img = expand_image(img, a[5])
+            img = day_twenty(a, img, a[5])
+
+        else:
+            img = expand_image(img, a[0])
+            img = day_twenty(a, img, a[0])
+
+    while len(img) > final_size[0]:
+        img = img[1:-1, 1:-1]
+    for line in img:
+        for p in line:
+            if p == '#':
+                pcount += 1
+    return pcount
+
+
+def day_twenty(algo: str, image: list, pad: str):
+    new_image = image.copy()
     for y, line in enumerate(image):
         for x, pixel in enumerate(line):
             pixel_sig = []
@@ -37,7 +63,7 @@ def day_twenty(algo: str, image: list) -> ...:
                 try:
                     pixel_sig.append(image[iy][ix])
                 except IndexError:
-                    pixel_sig.append('.')
+                    pixel_sig.append(pad)
             alg_index = pix_string_to_int(pixel_sig)
             new_image[y][x] = algo[alg_index]
 
@@ -54,8 +80,8 @@ def pix_string_to_int(plist: list) -> int:
     return int(bin_str, 2)
 
 
-def expand_image(image: list):
-    return np.pad(image, pad_width=4, mode='constant', constant_values='.')
+def expand_image(image: list, pad: str):
+    return np.pad(image, pad_width=3, mode='constant', constant_values=pad)
 
 
 def adjacent(x: int, y: int) -> Generator[tuple[int, int], None, None]:
@@ -90,6 +116,7 @@ def read_file():
 def main():
     algo, image = read_file()
     print(f'Part One: {part_one(algo, image)}')
+    print(f'Part Twp: {part_two(algo, image)}')
 
 
 if __name__ == "__main__":
