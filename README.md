@@ -63,4 +63,4 @@ with some techniques I haven't used much.
 
 Used Class, typing, zips, and list comprehensions
 
-## Day 12 - WIP
+## Day 20 - WIP
