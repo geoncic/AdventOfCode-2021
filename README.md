@@ -63,4 +63,8 @@ with some techniques I haven't used much.
 
 Used Class, typing, zips, and list comprehensions
 
-## Day 20 - WIP
+## Day 20 - Complete
+Easier than 19, but input data through me for a loop
+
+## Day 21 - Complete
+Part one was easy enough, but part two was tricky. Learned about chaching.
