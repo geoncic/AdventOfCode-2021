@@ -1,16 +1,15 @@
 import functools
-import collections
 import argparse
 import os.path
 
 
 INPUT_TXT = os.path.join(os.path.dirname(__file__), 'input.txt')
 QUANTUM_ROLLS = [(3, 1), (4, 3), (5, 6), (6, 7), (7, 6), (8, 3), (9, 1)]
-# REALITY_COMPLETE = [False, False, False, False, False, False, False]
 die = 0
 
 
 def day_twentyone(data: list):
+    score = 0
     players, turns = part_one(data)
     for player in players:
         if not player.win:
@@ -20,6 +19,7 @@ def day_twentyone(data: list):
     print(f'Part One: {part_one_sol}')
     print(f'Part Two: {part_two(data)}')
 
+
 class Player:
     pid: int
     position: int
@@ -27,14 +27,11 @@ class Player:
     win: bool
     realities = dict
 
-
     def __init__(self, pid: int, position: int) -> None:
         self.pid = pid
         self.position = position
         self.points = 0
         self.win = False
-        # [position, score, counts]
-        self.realities = {0: [0, 0, 0], 1: [0, 0, 0], 2: [0, 0, 0], 3: [0, 0, 0], 4: [0, 0, 0], 5: [0, 0, 0], 6: [0, 0, 0]}
 
     def move(self, r: int) -> ...:
         self.position += r
@@ -44,14 +41,15 @@ class Player:
         return self.points
 
 
-
 def turn(d1: int, d2: int, d3: int) -> int:
     return d1 + d2 + d3
+
 
 def find_pos(p: int) -> int:
     while p > 10:
         p -= 10
     return p
+
 
 def roll(d: int, size: int) -> int:
     global die
@@ -62,11 +60,10 @@ def roll(d: int, size: int) -> int:
         die += 1
         return die
 
-def play_dirac(players, score: int):
-    count = 0
 
-    p1_pos = players[0].position
-    p2_pos = players[1].position
+def play_dirac(players, score: int):
+    p1_p = players[0].position
+    p2_p = players[1].position
 
     @functools.lru_cache(maxsize=None)
     def win_count(
@@ -79,7 +76,7 @@ def play_dirac(players, score: int):
         for dis, ct in QUANTUM_ROLLS:
             new_p1_pos = find_pos(p1_pos + dis)
             new_p1_score = p1_score + new_p1_pos
-            if new_p1_score >= 21:
+            if new_p1_score >= score:
                 p1_wins += ct
             else:
                 tmp_p2_wins, tmp_p1_wins = win_count(
@@ -93,10 +90,11 @@ def play_dirac(players, score: int):
 
         return p1_wins, p2_wins
 
-    p1_win, p2_win = win_count(p1_pos, 0, p2_pos, 0)
+    p1_win, p2_win = win_count(p1_p, 0, p2_p, 0)
 
     print(f'P1 Wins: {p1_win}; P2 Wins: {p2_win}')
     return p1_win, p2_win
+
 
 def part_one(data: list):
     global die
@@ -126,7 +124,6 @@ def part_two(data: list):
     p1_wins, p2_wins = play_dirac(players, 21)
 
     return max(p1_wins, p2_wins)
-
 
 
 def read_file():
