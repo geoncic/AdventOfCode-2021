@@ -25,21 +25,73 @@ def part_one(data):
 
 def part_two(data):
     cubes: list[Cube] = []
+    reboots: list[Reboot] = []
+    status = 0
 
-    reboots = [Reboot.parse(line[0], line[1]) for line in data]
+    for line in data:
+        if line[0] == 'off':
+            status = -1
+        else:
+            status = 1
+        reboots.append(Reboot.parse(status, line[1]))
 
-    for step in reboots:
-       print(step)
-    # xmin, xmax, ymin, ymax, zmin, zmax = create_array(data)
-    # x_os = abs(xmin)
-    # y_os = abs(ymin)
-    # z_os = abs(zmin)
-    #
-    # print(xmin, xmax, ymin, ymax, zmin, zmax)
-    # reactor = np.zeros((xmax + x_os, ymax + y_os, zmax + z_os))
-    # print(reactor)
-    #
-    # # Todo: Create a numpy array based on largest and smallest values
+
+    # reboots = [Reboot.parse(line[0], line[1]) for line in data]
+
+    # test1 = ((0, 5), (0, 5), (0, 5))
+    # test2 = ((2, 7), (2, 7), (2, 7))
+    # ints = get_overlap(test1, test2)
+    # print(ints)
+
+    for curr_cube in reboots:
+        overlap: list[Cube] = []
+
+
+        for cube in cubes:
+            sign = curr_cube[0] * cube[0]
+
+            if curr_cube[0] == cube[0]:
+                sign = -1*curr_cube[0]
+
+            elif curr_cube[0] == 1 and cube[0] == -1:
+                sign = 1
+
+            c1 = ((curr_cube[1].x0, curr_cube[1].x1), (curr_cube[1].y0, curr_cube[1].y1), (curr_cube[1].z0, curr_cube[1].z1))
+            c2 = ((cube[1].x0, cube[1].x1), (cube[1].y0, cube[1].y1), (cube[1].z0, cube[1].z1))
+
+
+            if Cube.intersects(curr_cube[1], cube[1]):
+                inter = get_overlap(c1, c2)
+                overlap.append(Reboot.parse(sign, inter))
+
+        for intersection in overlap:
+            cubes.append(intersection)
+            # print(intersection)
+
+        if curr_cube[0] == 1:
+            cubes.append(curr_cube)
+
+    res = 0
+
+    for cube in cubes:
+        # print(cube)
+
+
+        res += abs(cube[1].size) * cube.status
+
+
+    print(cubes[-2])
+    print(cubes[-2][1].size)
+    print(res)
+    return res
+
+
+
+def get_overlap(c1: tuple[tuple], c2: tuple[tuple]) -> tuple[tuple]:
+    if any(r1[0] > r2[1] or r2[0] > r1[1] for r1, r2 in zip(c1, c2)):
+        return None
+
+    return tuple([(max(r1[0], r2[0]), min(r1[1], r2[1])) for r1, r2 in zip(c1, c2)])
 
 
 class Cube(NamedTuple):
@@ -53,43 +105,58 @@ class Cube(NamedTuple):
     @property
     def size(self) -> int:
         return (
-            self.x1 - self.x0 *
-            self.y1 - self.y0 *
-            self.z1 - self.z0
+            abs(self.x1 - self.x0+1) *
+            abs(self.y1 - self.y0+1) *
+            abs(self.z1 - self.z0+1)
         )
 
     def intersects(self, other: Cube) -> bool:
         return (
-            self.x0 <= other.x1 - 1 and
-            self.x1 - 1 >= other.x0 and
-            self.y0 <= other.y1 - 1 and
-            self.y1 - 1 >= other.y0 and
-            self.z0 <= other.z1 - 1 and
-            self.z1 - 1 >= other.z0
+            self.x0 < other.x1 and
+            self.x1 > other.x0 and
+            self.y0 < other.y1 and
+            self.y1 > other.y0 and
+            self.z0 < other.z1 and
+            self.z1 > other.z0
         )
 
 
     @classmethod
     def parse(cls, x0: int, x1: int, y0: int, y1: int, z0: int, z1: int) -> Cube:
         return cls(
-            x0, x1 + 1,
-            y0, y1 + 1,
-            z0, z1 + 1,
+            x0, x1,
+            y0, y1,
+            z0, z1,
         )
 
 
 class Reboot(NamedTuple):
-    on: bool
+    status: int
     cube: Cube
 
     @classmethod
-    def parse(cls, s: str, inst: tuple[tuple]) -> Reboot:
-        status = s
+    def parse(cls, s: int, inst: tuple[tuple]) -> Reboot:
+        # status = -1 if s == 'off' else 1
         x0, x1 = inst[0][0], inst[0][1]
         y0, y1 = inst[1][0], inst[1][1]
         z0, z1 = inst[2][0], inst[2][1]
 
-        return cls(status == 'on', Cube.parse(x0, x1, y0, y1, z0, z1))
+        return cls(s, Cube.parse(x0, x1, y0, y1, z0, z1))
+
+class Overlap(NamedTuple):
+    modifier: int
+    cube: Cube
+
+    @classmethod
+    def parse(cls, m: int, inst: tuple[tuple]) -> Reboot:
+        modifier = m
+        x0, x1 = inst[0][0], inst[0][1]
+        y0, y1 = inst[1][0], inst[1][1]
+        z0, z1 = inst[2][0], inst[2][1]
+
+        return cls(modifier, Cube.parse(x0, x1, y0, y1, z0, z1))
+
+
 
 def create_array(data):
     xmin, xmax, ymin, ymax, zmin, zmax = 0, 0, 0, 0, 0, 0
